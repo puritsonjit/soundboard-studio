@@ -1,0 +1,81 @@
+name: Windows build
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-2025
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Set up Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.12.13"
+          cache: pip
+          cache-dependency-path: requirements-lock.txt
+
+      - name: Install pinned dependencies
+        shell: pwsh
+        run: |
+          python -m pip install --disable-pip-version-check pip==26.1.2
+          python -m pip install --disable-pip-version-check -r requirements-lock.txt
+
+      - name: Verify source
+        shell: pwsh
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          python -m unittest discover -s tests -v
+          ruff check src/python_qt6 tests tools
+          python -m compileall -q src/python_qt6 tests tools
+
+      - name: Build unsigned release artifact
+        shell: pwsh
+        run: |
+          $env:SOURCE_DATE_EPOCH = git log -1 --format=%ct
+          powershell -NoProfile -ExecutionPolicy Bypass -File tools/package-pyqt6.ps1
+
+      - name: Verify release metadata and contents
+        shell: pwsh
+        run: |
+          $exe = Get-Item -LiteralPath dist_pyqt6/SoundboardQt6.exe
+          if ($exe.VersionInfo.ProductName -ne "Soundboard Studio") {
+            throw "Unexpected product name: $($exe.VersionInfo.ProductName)"
+          }
+          if ($exe.VersionInfo.ProductVersion -ne (Get-Content VERSION -Raw).Trim()) {
+            throw "The executable and VERSION file do not match."
+          }
+          if ((Get-AuthenticodeSignature $exe.FullName).Status -ne "NotSigned") {
+            throw "The CI source artifact must remain unsigned until SignPath processes it."
+          }
+          if (Test-Path dist_pyqt6/driver/signed_cable_fallback/VBCABLE_Driver_Pack45.zip) {
+            throw "The proprietary VB-CABLE package must not be in the public CI artifact."
+          }
+          $hash = (Get-FileHash $exe.FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+          "$hash  SoundboardQt6.exe" | Set-Content dist_pyqt6/SHA256SUMS.txt -Encoding ascii
+
+      - name: Upload unsigned artifact for SignPath
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: soundboard-studio-windows-unsigned-${{ github.sha }}
+          if-no-files-found: error
+          retention-days: 14
+          path: |
+            dist_pyqt6/SoundboardQt6.exe
+            dist_pyqt6/SHA256SUMS.txt
+            dist_pyqt6/LICENSE
+            dist_pyqt6/PRIVACY.md
+            dist_pyqt6/THIRD_PARTY_NOTICES.md
+            dist_pyqt6/licenses/**

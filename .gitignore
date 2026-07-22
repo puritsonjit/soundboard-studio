@@ -1,0 +1,42 @@
+# Local history mirrors and manual backups
+/Backup/
+/backup/
+/.git-local/
+
+# Local dependency environment and downloaded installer cache
+/env/
+
+# Private signing material must never enter source control
+/signing/
+*.pfx
+*.p12
+*.pvk
+*.key
+
+# Application build/package output
+/build_pyqt6/
+/dist_pyqt6/
+/*.spec
+
+# User configuration and runtime assets
+/data/
+/runtime/
+
+# Visual QA output
+/ui_audit/
+
+# Python caches and reports
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Editors and operating-system files
+.idea/
+.vscode/
+Thumbs.db
+Desktop.ini
+*.tmp
+*.log

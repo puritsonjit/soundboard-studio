@@ -1,0 +1,33 @@
+* text=auto
+
+*.py text eol=lf
+*.js text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.txt text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+LICENSE text eol=lf
+VERSION text eol=lf
+
+*.ps1 text eol=crlf
+*.cs text eol=crlf
+*.xaml text eol=crlf
+*.sln text eol=crlf
+*.vcxproj text eol=crlf
+*.Filters text eol=crlf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.ico binary
+*.wav binary
+*.mp3 binary
+*.ogg binary
+*.oga binary
+*.flac binary
+*.cab binary
+*.sys binary
+*.zip binary
