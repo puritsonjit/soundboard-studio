@@ -6,8 +6,7 @@ page.
 
 ## Unreleased
 
-- Accepted into the SignPath Foundation open-source signing program.
-- Refreshed public documentation and release verification guidance.
+- Refined public documentation, release guidance, and package metadata.
 
 ## [1.0.0] - 2026-07-22
 
@@ -23,11 +22,5 @@ page.
 - ZIP profile import and export with managed sound and image copies.
 - Automatic VB-CABLE setup assistance and verified helper downloads.
 - One-file, console-free Windows packaging with a borderless loading screen.
-
-### Release Status
-
-The v1.0.0 preview assets are unsigned. Their release page provides SHA-256
-checksums and links to the verified GitHub Actions build. A signed artifact will
-be published separately after the approved SignPath integration is complete.
 
 [1.0.0]: https://github.com/puritsonjit/soundboard-studio/releases/tag/v1.0.0

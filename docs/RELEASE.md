@@ -1,7 +1,7 @@
 # Release Process
 
 This checklist applies to official Windows releases. The GitHub Actions build
-and SignPath request must originate from the public repository.
+must originate from the public repository.
 
 ## 1. Prepare
 
@@ -22,31 +22,18 @@ env\pyqt6\Scripts\python.exe -m compileall -q src\python_qt6 tests tools
 The release commit must be reviewed, committed, and pushed before creating a
 version tag. Do not rebuild a published tag with different source.
 
-## 3. Build And Sign
+## 3. Build
 
 The pinned Windows workflow must:
 
 1. build on a GitHub-hosted Windows runner;
 2. verify tests, lint, bytecode compilation, and executable metadata;
-3. upload the unsigned source artifact to GitHub Actions;
-4. submit that exact artifact to SignPath with origin verification;
-5. wait for the required manual signing approval; and
-6. download the completed signed artifact without modifying it.
-
-The SignPath API token is stored only as a GitHub Actions secret. Project,
-policy, and artifact-configuration identifiers must match the approved SignPath
-project.
+3. generate the SHA-256 checksum; and
+4. upload the complete Windows artifact to GitHub Actions.
 
 ## 4. Verify Artifact
 
-Check Authenticode and timestamp status:
-
-```powershell
-Get-AuthenticodeSignature .\SoundboardQt6.exe |
-  Format-List Status, StatusMessage, SignerCertificate, TimeStamperCertificate
-```
-
-`Status` must be `Valid`. Generate the checksum from the final signed file:
+Generate and compare the checksum from the final file:
 
 ```powershell
 Get-FileHash .\SoundboardQt6.exe -Algorithm SHA256
@@ -62,8 +49,7 @@ The GitHub release must include:
 
 - the final artifact and SHA-256 checksum;
 - source commit and successful workflow links;
-- clear signed or unsigned status;
-- code-signing, privacy, security, and uninstall links; and
+- privacy, security, third-party notice, and uninstall links; and
 - concise user-visible changes from `CHANGELOG.md`.
 
 Never replace a published asset with different bytes under the same filename.

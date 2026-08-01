@@ -7,12 +7,6 @@ apps, streaming tools, and recording software.
 
 [Download v1.0.0](https://github.com/puritsonjit/soundboard-studio/releases/tag/v1.0.0)
 | [Changelog](CHANGELOG.md)
-| [Code signing policy](CODE_SIGNING_POLICY.md)
-
-> **Release status:** The project has been accepted into the SignPath Foundation
-> open-source program. The current v1.0.0 preview files remain unsigned while
-> the verified signing integration is completed. Signed artifacts will be
-> identified explicitly after Authenticode verification succeeds.
 
 ## Features
 
@@ -41,7 +35,7 @@ apps, streaming tools, and recording software.
    page.
 2. Download the portable ZIP and extract it to a writable folder.
 3. Launch `SoundboardQt6.exe`.
-4. If VB-CABLE is missing, approve its signed installer and restart Windows when
+4. If VB-CABLE is missing, approve its installer and restart Windows when
    requested.
 5. In Discord, TeamSpeak, OBS, or another voice app, select
    `CABLE Output (VB-Audio Virtual Cable)` as the microphone.
@@ -87,7 +81,7 @@ See [Development](docs/DEVELOPMENT.md) for the complete workflow.
 .github/workflows/   Verified Windows release build
 src/python_qt6/      Desktop application, audio engine, and phone remote
 tests/               Automated regression tests
-tools/               Environment, validation, packaging, and signing tools
+tools/               Environment, validation, and packaging tools
 docs/                Architecture, remote, development, and release guides
 ```
 
@@ -100,7 +94,6 @@ docs/                Architecture, remote, development, and release guides
 - [Git Workflow](docs/GIT_WORKFLOW.md)
 - [Privacy](PRIVACY.md)
 - [Security](SECURITY.md)
-- [Code Signing Policy](CODE_SIGNING_POLICY.md)
 - [Third-Party Notices](THIRD_PARTY_NOTICES.md)
 - [Contributing](CONTRIBUTING.md)
 - [Uninstall](docs/UNINSTALL.md)
@@ -108,12 +101,8 @@ docs/                Architecture, remote, development, and release guides
 ## Release Integrity
 
 Official release candidates are built from this public repository by the pinned
-GitHub Actions workflow. Each release provides a SHA-256 checksum. Signed
-releases are promoted only after the Authenticode signature, timestamp, source
-commit, and release metadata have been verified.
-
-Free code signing is provided by [SignPath.io](https://signpath.io/), certificate
-by [SignPath Foundation](https://signpath.org/).
+GitHub Actions workflow. Release pages include a SHA-256 checksum, source commit,
+and successful workflow link for independent verification.
 
 ## License
 

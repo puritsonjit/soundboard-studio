@@ -61,7 +61,7 @@ data/soundboard_config.json
 runtime/sounds/
 runtime/images/
 runtime/tools/cloudflared.exe   (Internet mode only)
-driver/signed_cable_fallback/   (virtual mic setup only)
+driver/                         (virtual mic setup only)
 ```
 
 Profile ZIP files include configuration and referenced managed assets. They do

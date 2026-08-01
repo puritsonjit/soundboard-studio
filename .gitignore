@@ -6,8 +6,7 @@
 # Local dependency environment and downloaded installer cache
 /env/
 
-# Private signing material must never enter source control
-/signing/
+# Private release credentials must never enter source control
 *.pfx
 *.p12
 *.pvk

@@ -1,10 +1,5 @@
 param(
     [string]$Name = "SoundboardQt6",
-    [switch]$Sign,
-    [string]$CertificateThumbprint = $env:SOUNDBOARD_SIGNING_CERT_THUMBPRINT,
-    [ValidateSet("CurrentUser", "LocalMachine")]
-    [string]$CertificateStoreLocation = "CurrentUser",
-    [string]$TimestampUrl = "http://timestamp.digicert.com",
     [string]$PythonExecutable = ""
 )
 
@@ -75,10 +70,10 @@ if (Test-Path $driverTargetDir) {
 if (Test-Path $cableZipSource) {
   New-Item -ItemType Directory -Force -Path $cableZipTargetDir | Out-Null
   Copy-Item -Force $cableZipSource (Join-Path $cableZipTargetDir "VBCABLE_Driver_Pack45.zip")
-  Write-Host "Staged signed virtual microphone package:"
+  Write-Host "Staged VB-CABLE setup package:"
   Write-Host "  $(Join-Path $cableZipTargetDir 'VBCABLE_Driver_Pack45.zip')"
 } else {
-  Write-Host "Signed virtual microphone package cache not found; the app will download it on first run."
+  Write-Host "VB-CABLE setup package cache not found; the app will download it on first run."
 }
 
 & $python (Join-Path $repoRoot "tools\collect-license-notices.py") `
@@ -88,31 +83,21 @@ if ($LASTEXITCODE -ne 0) {
   throw "License notice collection failed with exit code $LASTEXITCODE."
 }
 
+Get-ChildItem -LiteralPath $distPath -File -Filter "CODE_*_POLICY.md" -ErrorAction SilentlyContinue |
+  Remove-Item -Force
+
 foreach ($document in @(
   "LICENSE",
   "README.md",
   "CHANGELOG.md",
   "PRIVACY.md",
   "SECURITY.md",
-  "CODE_SIGNING_POLICY.md",
   "THIRD_PARTY_NOTICES.md"
 )) {
   Copy-Item -LiteralPath (Join-Path $repoRoot $document) -Destination (Join-Path $distPath $document) -Force
 }
 Copy-Item -LiteralPath (Join-Path $repoRoot "docs\UNINSTALL.md") -Destination (Join-Path $distPath "UNINSTALL.md") -Force
 
-if ($Sign) {
-  & (Join-Path $repoRoot "tools\sign-windows-app.ps1") `
-    -FilePath $exePath `
-    -CertificateThumbprint $CertificateThumbprint `
-    -CertificateStoreLocation $CertificateStoreLocation `
-    -TimestampUrl $TimestampUrl
-}
-
 Write-Host ""
-if ($Sign) {
-  Write-Host "Built and signed EXE:"
-} else {
-  Write-Host "Built unsigned EXE:"
-}
+Write-Host "Built EXE:"
 Write-Host "  $exePath"

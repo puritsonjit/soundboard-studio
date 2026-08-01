@@ -19,9 +19,9 @@ env\pyqt6\Scripts\python.exe -m compileall -q src\python_qt6 tests tools
 - Keep changes focused and explain user-visible behavior.
 - Add regression tests for bug fixes and new behavior when practical.
 - Do not commit pad sounds, personal images, profiles, credentials, private
-  signing keys, downloaded executables, or generated build output.
+  keys, downloaded executables, or generated build output.
 - External pull requests require maintainer review before merging.
-- Changes to build, release, dependency, networking, or signing files receive
+- Changes to build, release, dependency, or networking files receive
   additional supply-chain review.
 
 Use GitHub's private vulnerability reporting instead of a pull request for an

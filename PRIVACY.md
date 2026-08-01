@@ -35,8 +35,8 @@ the tunnel is also subject to Cloudflare's privacy terms.
 ## Virtual Microphone Setup
 
 If VB-CABLE is missing and installation is requested, the app downloads the
-official signed installer from VB-Audio. Installation requires Windows UAC and
-is governed by VB-Audio's terms. No installation information is returned to the
+official installer from VB-Audio. Installation requires Windows UAC and is
+governed by VB-Audio's terms. No installation information is returned to the
 Soundboard Studio maintainers.
 
 ## Removing Data

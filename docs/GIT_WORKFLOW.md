@@ -35,7 +35,7 @@ git commit -m "docs: clarify release verification"
 ```
 
 External pull requests require maintainer review. Build, dependency, network,
-release, and signing changes receive additional supply-chain review.
+and release changes receive additional supply-chain review.
 
 ## Recovery
 
