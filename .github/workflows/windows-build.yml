@@ -67,6 +67,7 @@ jobs:
           "$hash  SoundboardQt6.exe" | Set-Content dist_pyqt6/SHA256SUMS.txt -Encoding ascii
 
       - name: Upload unsigned artifact for SignPath
+        id: upload-unsigned-artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: soundboard-studio-windows-unsigned-${{ github.sha }}
@@ -76,6 +77,11 @@ jobs:
             dist_pyqt6/SoundboardQt6.exe
             dist_pyqt6/SHA256SUMS.txt
             dist_pyqt6/LICENSE
+            dist_pyqt6/README.md
+            dist_pyqt6/CHANGELOG.md
             dist_pyqt6/PRIVACY.md
+            dist_pyqt6/SECURITY.md
+            dist_pyqt6/CODE_SIGNING_POLICY.md
             dist_pyqt6/THIRD_PARTY_NOTICES.md
+            dist_pyqt6/UNINSTALL.md
             dist_pyqt6/licenses/**

@@ -2,10 +2,11 @@
 
 ## Current Status
 
-The project is preparing an application to the SignPath Foundation open-source
-program. Until that application is accepted and the pipeline is connected,
-release artifacts must be described as unsigned and must not claim a SignPath
-signature.
+The project has been accepted into the SignPath Foundation open-source program.
+The GitHub and SignPath signing integration is being completed. Existing
+v1.0.0 preview artifacts remain unsigned and must not claim a SignPath signature.
+An artifact is described as signed only after its Authenticode signature and
+timestamp have been verified successfully.
 
 Free code signing provided by [SignPath.io](https://signpath.io/), certificate
 by [SignPath Foundation](https://signpath.org/).
@@ -34,8 +35,9 @@ multi-factor authentication for both the source repository and SignPath.
 - Every signing request requires manual approval by the signing approver.
 - The signing key remains in SignPath's hardware security module and is never
   copied into this repository or onto a maintainer computer.
-- A release is published only after Authenticode verification, malware scanning,
-  and SHA-256 checksum generation succeed.
+- Unsigned previews must be labeled clearly and must not replace a signed asset.
+- A signed release is promoted only after Authenticode verification, malware
+  scanning, and SHA-256 checksum generation succeed.
 
 ## Privacy Statement
 

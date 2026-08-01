@@ -49,51 +49,32 @@ dist_pyqt6\SoundboardQt6.exe
 If `env/driver_cache/VBCABLE_Driver_Pack45.zip` is absent, the EXE downloads and
 Authenticode-verifies the official package when installation is needed.
 
-## Sign A Windows Release
+## Release Signing
 
-Public releases should be signed with a CA-issued Authenticode code-signing
-certificate. A self-signed certificate is useful only on computers where its
-root certificate was installed manually; it does not establish a trusted
-publisher on a fresh computer.
+The project has been accepted into the SignPath Foundation open-source program.
+The GitHub Actions workflow creates and uploads an unsigned source artifact.
+After the SignPath project identifiers and repository secret are configured,
+the official SignPath GitHub action submits that exact GitHub artifact for
+origin-verified signing and downloads the completed result.
 
-Install the release certificate and its private key in the Windows Personal
-certificate store for the build account. Hardware-backed and non-exportable
-keys are supported. List usable certificates with:
+Never commit a SignPath API token, private key, PFX password, hardware-token
+PIN, or other signing credential. Signing requests require the approval and
+verification rules in [Code Signing Policy](../CODE_SIGNING_POLICY.md).
 
-```powershell
-Get-ChildItem Cert:\CurrentUser\My -CodeSigningCert |
-  Select-Object Subject, Thumbprint, NotAfter, HasPrivateKey
-```
-
-Sign and verify an existing build:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File tools\sign-windows-app.ps1 `
-  -CertificateThumbprint "YOUR_CERTIFICATE_THUMBPRINT"
-```
-
-Or build and sign in one fail-closed operation:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File tools\package-pyqt6.ps1 `
-  -Sign `
-  -CertificateThumbprint "YOUR_CERTIFICATE_THUMBPRINT"
-```
-
-The signing script uses SHA-256, requires an RFC 3161 timestamp, and verifies
-the Windows Authenticode chain before replacing the release EXE. The original
-EXE remains untouched if signing or verification fails. The thumbprint may
-instead be placed in the `SOUNDBOARD_SIGNING_CERT_THUMBPRINT` environment
-variable. Never store a private key, PFX password, token PIN, or signing-service
-credential in Git; common private-key formats and the local `signing` directory
-are ignored.
-
-Confirm any release independently with:
+Confirm a signed release independently with:
 
 ```powershell
 Get-AuthenticodeSignature dist_pyqt6\SoundboardQt6.exe |
   Format-List Status, StatusMessage, SignerCertificate, TimeStamperCertificate
 ```
+
+`Status` must be `Valid`, and both signer and timestamp certificates must be
+present. Verify the SHA-256 checksum after signing because Authenticode changes
+the executable bytes.
+
+`tools/sign-windows-app.ps1` remains available for maintainers who own a
+separate CA-issued Authenticode certificate. It is not the SignPath Foundation
+workflow. See [Release Process](RELEASE.md) for the authoritative checklist.
 
 ## Clean Reproducible Output
 

@@ -88,9 +88,18 @@ if ($LASTEXITCODE -ne 0) {
   throw "License notice collection failed with exit code $LASTEXITCODE."
 }
 
-foreach ($document in @("LICENSE", "PRIVACY.md", "THIRD_PARTY_NOTICES.md")) {
+foreach ($document in @(
+  "LICENSE",
+  "README.md",
+  "CHANGELOG.md",
+  "PRIVACY.md",
+  "SECURITY.md",
+  "CODE_SIGNING_POLICY.md",
+  "THIRD_PARTY_NOTICES.md"
+)) {
   Copy-Item -LiteralPath (Join-Path $repoRoot $document) -Destination (Join-Path $distPath $document) -Force
 }
+Copy-Item -LiteralPath (Join-Path $repoRoot "docs\UNINSTALL.md") -Destination (Join-Path $distPath "UNINSTALL.md") -Force
 
 if ($Sign) {
   & (Join-Path $repoRoot "tools\sign-windows-app.ps1") `

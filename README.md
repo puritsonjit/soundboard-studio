@@ -1,63 +1,94 @@
 # Soundboard Studio
 
-Soundboard Studio is a portable Windows soundboard with a Python Qt6 desktop
-app and a responsive phone-browser remote. It combines a selected microphone
-with pad audio and sends the mix to the signed VB-CABLE virtual microphone.
+Soundboard Studio is a portable Windows soundboard with a Qt for Python desktop
+host and a responsive phone-browser remote. It combines a selected microphone
+with pad audio and sends the mix to a VB-CABLE virtual microphone for voice
+apps, streaming tools, and recording software.
 
-Source repository: [github.com/puritsonjit/soundboard-studio](https://github.com/puritsonjit/soundboard-studio)
+[Download v1.0.0](https://github.com/puritsonjit/soundboard-studio/releases/tag/v1.0.0)
+| [Changelog](CHANGELOG.md)
+| [Code signing policy](CODE_SIGNING_POLICY.md)
 
-The project is free and open-source software licensed under the
-[GNU General Public License version 3](LICENSE). Selling an unmodified or
-modified build does not remove the GPL source and redistribution requirements.
+> **Release status:** The project has been accepted into the SignPath Foundation
+> open-source program. The current v1.0.0 preview files remain unsigned while
+> the verified signing integration is completed. Signed artifacts will be
+> identified explicitly after Authenticode verification succeeds.
 
-## Current Features
+## Features
 
 - 24 programmable pads with labels, images, colors, independent volume, and
   optional global keyboard shortcuts
-- single-clip pads or random sound-pack folders
-- permanent 15-second clip limit with an editor for trimming longer files
-- local-only preview from the desktop; phone and shortcut triggers enter the
-  virtual microphone mix
-- Stack and Solo playback modes plus Stop All
-- local LAN or private temporary Internet remote with a QR code
-- ZIP profile import/export and managed copies of every pad sound and image
-- low-latency 48 kHz microphone and soundboard mixing
-- one-file, console-free Windows packaging
-- fail-closed Authenticode release signing for a CA-issued publisher certificate
+- single-clip pads and random sound-pack folders
+- built-in clip editor with a permanent 15-second playback limit
+- responsive phone remote for local Wi-Fi and temporary private Internet links
+- Stack and Solo playback modes with a universal Stop All control
+- microphone and pad mixing at 48 kHz through VB-CABLE
+- soundboard-only local monitoring with independent preview volume
+- ZIP profile import and export with managed copies of pad sounds and images
+- one-file, console-free Windows build with automatic runtime-folder creation
 
-## Run The App
+## Requirements
 
-The current packaged build is:
+- 64-bit Windows 10 or Windows 11
+- a microphone and an output device for local soundboard monitoring
+- administrator approval when VB-CABLE must be installed
+- a phone and PC on the same reachable network for Local remote mode
+- Internet access for first-time helper downloads or Internet remote mode
+
+## Download And Run
+
+1. Open the [GitHub Releases](https://github.com/puritsonjit/soundboard-studio/releases)
+   page.
+2. Download the portable ZIP and extract it to a writable folder.
+3. Launch `SoundboardQt6.exe`.
+4. If VB-CABLE is missing, approve its signed installer and restart Windows when
+   requested.
+5. In Discord, TeamSpeak, OBS, or another voice app, select
+   `CABLE Output (VB-Audio Virtual Cable)` as the microphone.
+
+The app creates and manages `data`, `runtime`, and `driver` beside the EXE.
+Keep those folders with the EXE when moving an existing setup to another
+computer. Export a profile ZIP before replacing or removing a configured copy.
+
+Discord Studio mode is recommended. Voice isolation and aggressive noise
+suppression can treat music and effects as unwanted background audio.
+
+## Audio Routing
 
 ```text
-dist_pyqt6\SoundboardQt6.exe
+real microphone ----+
+                    +--> Soundboard Studio --> CABLE Input
+sound pad ----------+                          |
+                                               +--> CABLE Output --> voice app
+
+sound pad only -------------------------------------> headphones / speakers
 ```
 
-The EXE creates `data`, `runtime`, and `driver` beside itself as needed. Keep
-those folders with the EXE when moving an existing setup to another computer.
-On a fresh computer, the app prepares the signed VB-CABLE installer on first
-launch if no virtual route is available. Windows still requires UAC approval
-and may require a reboot because the virtual microphone is a system driver.
+The microphone is not played through the local monitor. Desktop previews are
+local only; phone and global-shortcut triggers enter the virtual microphone mix.
 
-In Discord or another voice app, select:
+## Build From Source
 
-```text
-CABLE Output (VB-Audio Virtual Cable)
+Create the project-local Python 3.12 environment, verify the source, and build
+the portable EXE:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools\setup-python-env.ps1
+env\pyqt6\Scripts\python.exe -m unittest discover -s tests -v
+env\pyqt6\Scripts\ruff.exe check src\python_qt6 tests tools
+powershell -ExecutionPolicy Bypass -File tools\package-pyqt6.ps1
 ```
 
-Discord Studio mode is recommended. Voice-isolation and noise-suppression modes
-often treat music and effects as unwanted background audio.
+See [Development](docs/DEVELOPMENT.md) for the complete workflow.
 
 ## Project Layout
 
 ```text
-src/python_qt6/       Active desktop app, audio engine, and web remote
-tests/                Automated regression tests
-tools/                Environment, build, cleanup, and local Git scripts
-dist_pyqt6/           Packaged EXE and personal runtime data (not tracked)
-env/pyqt6/            Project-local Python environment (not tracked)
-env/driver_cache/     Cached official VB-CABLE package (not tracked)
-Backup/local-git/     Local bare Git recovery mirror (not tracked)
+.github/workflows/   Verified Windows release build
+src/python_qt6/      Desktop application, audio engine, and phone remote
+tests/               Automated regression tests
+tools/               Environment, validation, packaging, and signing tools
+docs/                Architecture, remote, development, and release guides
 ```
 
 ## Documentation
@@ -65,7 +96,8 @@ Backup/local-git/     Local bare Git recovery mirror (not tracked)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Phone Remote](docs/REMOTE.md)
 - [Development](docs/DEVELOPMENT.md)
-- [Local Git](LOCAL_GIT_GUIDE.md)
+- [Release Process](docs/RELEASE.md)
+- [Git Workflow](docs/GIT_WORKFLOW.md)
 - [Privacy](PRIVACY.md)
 - [Security](SECURITY.md)
 - [Code Signing Policy](CODE_SIGNING_POLICY.md)
@@ -73,11 +105,17 @@ Backup/local-git/     Local bare Git recovery mirror (not tracked)
 - [Contributing](CONTRIBUTING.md)
 - [Uninstall](docs/UNINSTALL.md)
 
-Official public builds are produced by the pinned GitHub Actions workflow. The
-project is preparing an application for free open-source signing through
-SignPath Foundation; releases remain explicitly unsigned until that application
-is accepted and the signing integration is active.
+## Release Integrity
 
-The unfinished C# prototype and custom test-signed SysVAD driver were removed
-from the active tree. Their complete history remains available under the Git tag
-`pre-cleanup-2026-07-18`.
+Official release candidates are built from this public repository by the pinned
+GitHub Actions workflow. Each release provides a SHA-256 checksum. Signed
+releases are promoted only after the Authenticode signature, timestamp, source
+commit, and release metadata have been verified.
+
+Free code signing is provided by [SignPath.io](https://signpath.io/), certificate
+by [SignPath Foundation](https://signpath.org/).
+
+## License
+
+Soundboard Studio is free and open-source software licensed under the
+[GNU General Public License version 3](LICENSE).
